@@ -1,0 +1,42 @@
+## Ignorar carpetas de compilación
+[Bb]in/
+[Oo]bj/
+
+## Ignorar archivos y carpetas temporales de Visual Studio y VS Code
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.docstates
+
+## Ignorar archivos de configuración local con secretos (MUY IMPORTANTE PARA REPOS PÚBLICOS)
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+## Ignorar logs
+*.log
+
+## Ignorar archivos de base de datos locales de SQLite/LocalDB (si alguien los usara)
+*.sqlite
+*.sqlite3
+*.db
+*.mdf
+*.ldf
+
+## Ignorar caché de herramientas de .NET
+.store/
+.tools/
+
+## Ignorar archivos temporales del SO
+.DS_Store
+Thumbs.db
+
+## Ignorar dependencias descargadas de Node (por si en el futuro agregas un frontend en la misma solución)
+node_modules/
+dist/
+
+## Ignorar archivos generados por herramientas de cobertura de código
+TestResults/
+*.coverage
+*.coveragexml
