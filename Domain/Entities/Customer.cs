@@ -1,10 +1,10 @@
-﻿using Domain.Common;
+using Domain.Common;
 
 namespace Domain.Entities;
 
 public class Customer : BaseEntity
 {
-    public int WorkShopId { get; set; }
+    public int WorkshopId { get; set; }
     public int PersonId { get; set; }
     public string? AddressStreet { get; set; }
     public string? AddressCity { get; set; }

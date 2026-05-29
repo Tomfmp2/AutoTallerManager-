@@ -27,6 +27,20 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         return await _dbSet.ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<T>> GetAsync(
+        System.Linq.Expressions.Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool disableTracking = true,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<T> query = _dbSet;
+        if (disableTracking) query = query.AsNoTracking();
+        if (predicate != null) query = query.Where(predicate);
+        if (orderBy != null)
+            return await orderBy(query).ToListAsync(cancellationToken);
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<T>> GetPagedAsync(PaginationParams paginationParams, CancellationToken cancellationToken = default)
     {
         var query = _dbSet.AsQueryable();
@@ -41,10 +55,9 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         return new PagedResult<T>(items, totalItems, paginationParams.PageNumber, paginationParams.PageSize);
     }
 
-    public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
+    public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
-        return entity;
     }
 
     public void Update(T entity)

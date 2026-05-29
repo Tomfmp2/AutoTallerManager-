@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +7,7 @@ namespace Domain.Entities;
 
 public class Part : BaseEntity
 {
-    public int WorkShopId { get; set; }
+    public int WorkshopId { get; set; }
     public int PartCategoryId { get; set; }
     public string Code { get; set; } = string.Empty;
     public string? PartBrand { get; set; }

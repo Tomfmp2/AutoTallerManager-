@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 
 namespace Domain.Entities;
 
@@ -10,6 +10,7 @@ public class ServiceOrder : BaseEntity
     public int MechanicId { get; set; }
     public int? ReceptionistId { get; set; }
     public int OrderStatusId { get; set; }
+    public DateTime EntryDate { get; set; } = DateTime.UtcNow;
     public DateTime? ScheduledDate { get; set; }
     public DateTime? EstimatedDeliveryDate { get; set; }
     public DateTime? ActualDeliveryDate { get; set; }
@@ -25,6 +26,6 @@ public class ServiceOrder : BaseEntity
     public User? Mechanic { get; set; }
     public User? Receptionist { get; set; }
     public OrderStatus? OrderStatus { get; set; }
-    public ICollection<ServiceOrderPart> serviceOrderParts { get; set; } = new List<ServiceOrderPart>();
+    public ICollection<ServiceOrderPart> ServiceOrderParts { get; set; } = new List<ServiceOrderPart>();
     public Invoice? Invoice { get; set; }
 }
