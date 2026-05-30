@@ -1,12 +1,12 @@
 using System.Reflection;
+using Application.Abstractions;
 using Domain.Entities;
 using Domain.Common;
 using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data.Context;  
 
 namespace Infrastructure.Data.Context;
 
-public class AutoTallerDbContext : DbContext
+public class AutoTallerDbContext : DbContext, IApplicationDbContext
 {
     public AutoTallerDbContext(DbContextOptions<AutoTallerDbContext> options) : base(options)
     {

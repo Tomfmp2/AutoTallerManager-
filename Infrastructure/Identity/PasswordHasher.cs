@@ -1,13 +1,15 @@
-﻿namespace Infrastructure.Identity;
+using Application.Abstractions;
 
-public static class PasswordHasher
+namespace Infrastructure.Identity;
+
+public class PasswordHasher : IPasswordHasher
 {
-    public static string Hash(string password)
+    public string Hash(string password)
     {
         return BCrypt.Net.BCrypt.HashPassword(password);
-
     }
-    public static bool Verify(string password, string passwordHash)
+
+    public bool Verify(string password, string passwordHash)
     {
         return BCrypt.Net.BCrypt.Verify(password, passwordHash);
     }

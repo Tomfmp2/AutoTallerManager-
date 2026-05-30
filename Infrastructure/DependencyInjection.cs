@@ -1,4 +1,4 @@
-﻿using Application.Abstractions;
+using Application.Abstractions;
 using Infrastructure.Data.Context;
 using Infrastructure.Identity;
 using Infrastructure.Persistence.UnitOfWork;
@@ -21,8 +21,10 @@ public static class DependencyInjection
                 npgsqlOptions => npgsqlOptions.MigrationsAssembly(typeof(AutoTallerDbContext).Assembly.FullName)
             ));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IApplicationDbContext>(provider =>
+            provider.GetRequiredService<AutoTallerDbContext>());
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
         return services;
     }
 }
-

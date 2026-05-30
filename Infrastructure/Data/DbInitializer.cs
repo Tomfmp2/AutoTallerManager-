@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Infrastructure.Data.Context;
 using Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -166,12 +166,14 @@ public static class DbInitializer
             };
             context.Persons.Add(adminPerson);
             await context.SaveChangesAsync();
+
+            var passwordHasher = new PasswordHasher();
             var adminUser = new User
             {
                 WorkshopId = mainWorkshop.Id,
                 PersonId = adminPerson.Id,
                
-                PasswordHash = PasswordHasher.Hash("Admin123!")
+                PasswordHash = passwordHasher.Hash("Admin123!")
             };
             context.Users.Add(adminUser);
             await context.SaveChangesAsync();
@@ -180,6 +182,28 @@ public static class DbInitializer
             {
                 UserId = adminUser.Id,
                 RoleId = adminRole.Id
+            });
+            await context.SaveChangesAsync();
+        }
+
+        // Asegurar que el dominio de email existe
+        if (!context.EmailDomains.Any(d => d.Domain == "autotallermanager.com"))
+        {
+            context.EmailDomains.Add(new EmailDomain { Domain = "autotallermanager.com" });
+            await context.SaveChangesAsync();
+        }
+
+        // Asegurar que el usuario Admin tenga su correo
+        var admin = await context.Users.Include(u => u.Person).FirstOrDefaultAsync();
+        if (admin != null && admin.Person != null && !context.PersonEmails.Any(pe => pe.PersonId == admin.PersonId))
+        {
+            var domain = await context.EmailDomains.FirstAsync(d => d.Domain == "autotallermanager.com");
+            context.PersonEmails.Add(new PersonEmail
+            {
+                PersonId = admin.PersonId,
+                EmailDomainId = domain.Id,
+                EmailUser = "admin",
+                IsPrimary = true
             });
             await context.SaveChangesAsync();
         }

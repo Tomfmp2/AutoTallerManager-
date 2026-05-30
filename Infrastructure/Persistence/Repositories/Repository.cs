@@ -30,11 +30,19 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     public async Task<IReadOnlyList<T>> GetAsync(
         System.Linq.Expressions.Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        string[]? includes = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default)
     {
         IQueryable<T> query = _dbSet;
         if (disableTracking) query = query.AsNoTracking();
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
         if (predicate != null) query = query.Where(predicate);
         if (orderBy != null)
             return await orderBy(query).ToListAsync(cancellationToken);
@@ -57,7 +65,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
 
     public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddAsync(entity, cancellationToken);
+        await _dbSet.AddAsync(entity, cancellationToken).AsTask();
     }
 
     public void Update(T entity)
