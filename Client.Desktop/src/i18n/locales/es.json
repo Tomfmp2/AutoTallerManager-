@@ -1,0 +1,15 @@
+{
+  "login": {
+    "title": "Bienvenido de nuevo",
+    "subtitle": "Ingresa tus credenciales para acceder al panel",
+    "emailLabel": "Correo Electrónico",
+    "emailPlaceholder": "admin@autotallermanager.com",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "submitBtn": "Iniciar Sesión",
+    "orContinueWith": "O continuar con",
+    "googleBtn": "Iniciar sesión con Google",
+    "noAccount": "¿No tienes cuenta?",
+    "contactAdmin": "Contacta al administrador"
+  }
+}

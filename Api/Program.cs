@@ -96,6 +96,17 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AutoTallerDbContext>();
     await DbInitializer.InitializeAsync(context);
+
+    if (!context.ServiceTypes.Any(s => s.Name == "Análisis del Mecánico"))
+    {
+        context.ServiceTypes.Add(new Domain.Entities.ServiceType 
+        { 
+            Name = "Análisis del Mecánico", 
+            EstimatedDurationHours = 0, 
+            PricePerHour = 0 
+        });
+        await context.SaveChangesAsync();
+    }
 }
 
 if (app.Environment.IsDevelopment())

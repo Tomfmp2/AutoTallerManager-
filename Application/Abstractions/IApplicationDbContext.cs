@@ -20,9 +20,12 @@ public interface IApplicationDbContext
     DbSet<VehicleBrand> VehicleBrands { get; }
     DbSet<VehicleColor> VehicleColors { get; }
     DbSet<VehicleOwnerHistory> VehicleOwnerHistories { get; }
+    DbSet<VehiclePhoto> VehiclePhotos { get; }
     DbSet<Part> Parts { get; }
     DbSet<PartCategory> PartCategories { get; }
     DbSet<ServiceOrder> ServiceOrders { get; }
+    DbSet<ServiceOrderReport> ServiceOrderReports { get; }
+    DbSet<ServiceOrderReportPart> ServiceOrderReportParts { get; }
     DbSet<ServiceOrderPart> ServiceOrderParts { get; }
     DbSet<ServiceType> ServiceTypes { get; }
     DbSet<OrderStatus> OrderStatuses { get; }
@@ -30,8 +33,12 @@ public interface IApplicationDbContext
     DbSet<UserRole> UserRoles { get; }
     DbSet<Role> Roles { get; }
     DbSet<Invoice> Invoices { get; }
+    DbSet<InvoiceDetail> InvoiceDetails { get; }
     DbSet<PaymentMethod> PaymentMethods { get; }
     DbSet<Workshop> Workshops { get; }
+    DbSet<Notification> Notifications { get; }
+    DbSet<Audit> Audits { get; }
+    DbSet<PersonDocument> PersonDocuments { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

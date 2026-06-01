@@ -36,13 +36,17 @@ public class AutoTallerDbContext : DbContext, IApplicationDbContext
     public DbSet<VehicleModel> VehicleModels => Set<VehicleModel>();
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<VehicleOwnerHistory> VehicleOwnerHistories => Set<VehicleOwnerHistory>();
+    public DbSet<VehiclePhoto> VehiclePhotos => Set<VehiclePhoto>();
 
     public DbSet<Part> Parts => Set<Part>();
     public DbSet<ServiceOrder> ServiceOrders => Set<ServiceOrder>();
+    public DbSet<ServiceOrderReport> ServiceOrderReports => Set<ServiceOrderReport>();
+    public DbSet<ServiceOrderReportPart> ServiceOrderReportParts => Set<ServiceOrderReportPart>();
     public DbSet<ServiceOrderPart> ServiceOrderParts => Set<ServiceOrderPart>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceDetail> InvoiceDetails => Set<InvoiceDetail>();
     public DbSet<Audit> Audits => Set<Audit>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

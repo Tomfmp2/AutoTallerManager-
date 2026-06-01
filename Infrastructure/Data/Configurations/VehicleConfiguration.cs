@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,6 +20,9 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
         builder.Property(v => v.VIN).HasColumnName("VIN").HasMaxLength(50).IsRequired();
         builder.Property(v => v.Year).HasColumnName("Anio");
         builder.Property(v => v.Mileage).HasColumnName("Kilometraje").HasDefaultValue(0);
+        builder.Property(v => v.FuelType).HasColumnName("TipoCombustible").HasMaxLength(30);
+        builder.Property(v => v.BodyType).HasColumnName("TipoCarroceria").HasMaxLength(30);
+        builder.Property(v => v.EngineNumber).HasColumnName("NumeroMotor").HasMaxLength(50);
         builder.Property(v => v.Notes).HasColumnName("Notas").HasMaxLength(500);
 
         builder.Property(v => v.IsActive).HasColumnName("Activo").HasDefaultValue(true);

@@ -10,10 +10,11 @@ public class CreateOrdenServicioCommand : IRequest<Result<int>>
     public int WorkshopId             { get; set; }
     public int VehicleId              { get; set; }
     public int ServiceTypeId          { get; set; }
-    public int MechanicId             { get; set; }
+    public int? MechanicId            { get; set; }
     public int? ReceptionistId        { get; set; }
-    public int OrderStatusId          { get; set; } = 1; // default: Recibido
+    public int OrderStatusId          { get; set; } = 1; // default: Pendiente
     public DateTime? FechaEstimada    { get; set; }
+    public DateTime? ScheduledDate    { get; set; }
     public string? Observaciones      { get; set; }
 }
 
@@ -37,6 +38,7 @@ public class CreateOrdenServicioCommandHandler : IRequestHandler<CreateOrdenServ
             ReceptionistId         = request.ReceptionistId,
             OrderStatusId          = request.OrderStatusId,
             EntryDate              = DateTime.UtcNow,
+            ScheduledDate          = request.ScheduledDate,
             EstimatedDeliveryDate  = request.FechaEstimada,
             Observations           = request.Observaciones
         };

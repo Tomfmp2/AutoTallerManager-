@@ -27,6 +27,13 @@ public class VehiculoProfile : Profile
                             : null)
                         .FirstOrDefault()
                     : null))
+            .ForMember(dest => dest.PropietarioId, opt => opt.MapFrom(src =>
+                src.OwnerHistories != null
+                    ? src.OwnerHistories
+                        .Where(h => h.EndDate == null)
+                        .Select(h => (int?)h.CustomerId)
+                        .FirstOrDefault()
+                    : null))
             .ForMember(dest => dest.TotalOrdenesServicio, opt => opt.MapFrom(src =>
                 src.ServiceOrders != null ? src.ServiceOrders.Count : 0));
     }

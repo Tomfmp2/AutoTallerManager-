@@ -1,0 +1,15 @@
+{
+  "login": {
+    "title": "Welcome back",
+    "subtitle": "Enter your credentials to access the dashboard",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "admin@autotallermanager.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitBtn": "Sign In",
+    "orContinueWith": "Or continue with",
+    "googleBtn": "Sign in with Google",
+    "noAccount": "Don't have an account?",
+    "contactAdmin": "Contact your administrator"
+  }
+}

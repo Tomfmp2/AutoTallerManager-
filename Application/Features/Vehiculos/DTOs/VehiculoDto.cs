@@ -11,6 +11,7 @@ public class VehiculoDto
     public string Modelo { get; set; } = null!;
     public string Color { get; set; } = null!;
     public string? PropietarioActual { get; set; }
+    public int? PropietarioId { get; set; }
     public int TotalOrdenesServicio { get; set; }
     public DateTime CreatedAt { get; set; }
 }

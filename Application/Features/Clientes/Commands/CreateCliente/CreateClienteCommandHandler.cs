@@ -27,7 +27,7 @@ public class CreateClienteCommandHandler : IRequestHandler<CreateClienteCommand,
         var domainName = emailParts[1];
 
         var emailDomainRepo = _unitOfWork.Repository<EmailDomain>();
-        var domains = await emailDomainRepo.GetAsync(d => d.Domain == domainName, cancellationToken: cancellationToken);
+        var domains = await emailDomainRepo.GetAsync(d => d.Domain == domainName, disableTracking: false, cancellationToken: cancellationToken);
         var emailDomain = domains.FirstOrDefault();
         if (emailDomain == null)
         {
@@ -36,7 +36,7 @@ public class CreateClienteCommandHandler : IRequestHandler<CreateClienteCommand,
         }
 
         var phoneCodeRepo = _unitOfWork.Repository<PhoneCode>();
-        var phoneCodes = await phoneCodeRepo.GetAsync(p => p.Code == "+57", cancellationToken: cancellationToken);
+        var phoneCodes = await phoneCodeRepo.GetAsync(p => p.Code == "+57", disableTracking: false, cancellationToken: cancellationToken);
         var phoneCode = phoneCodes.FirstOrDefault();
         if (phoneCode == null)
         {

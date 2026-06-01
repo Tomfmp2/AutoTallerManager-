@@ -45,8 +45,11 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginRes
                     e.EmailDomain.Domain == emailParts[1]),
                 cancellationToken);
 
-        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            return Result<LoginResponseDto>.Failure("Credenciales inválidas.");
+        if (user is null)
+            return Result<LoginResponseDto>.Failure("Correo no registrado.");
+
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            return Result<LoginResponseDto>.Failure("Contraseña incorrecta.");
 
         var roleName = user.UserRoles.FirstOrDefault()?.Role?.Name ?? "User";
         var token = _jwtService.GenerateToken(user, roleName);

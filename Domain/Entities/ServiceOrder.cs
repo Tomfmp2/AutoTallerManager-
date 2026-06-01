@@ -7,7 +7,7 @@ public class ServiceOrder : BaseEntity
     public int WorkshopId { get; set; }
     public int VehicleId { get; set; }
     public int ServiceTypeId { get; set; }
-    public int MechanicId { get; set; }
+    public int? MechanicId { get; set; }
     public int? ReceptionistId { get; set; }
     public int OrderStatusId { get; set; }
     public DateTime EntryDate { get; set; } = DateTime.UtcNow;

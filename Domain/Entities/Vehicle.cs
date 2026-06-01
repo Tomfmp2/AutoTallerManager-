@@ -11,6 +11,9 @@ public class Vehicle : BaseEntity
     public string VIN { get; set; } = string.Empty;
     public int Year { get; set; }
     public int Mileage { get; set; } = 0;
+    public string? FuelType { get; set; }       // Gasolina, Diésel, Eléctrico, Híbrido
+    public string? BodyType { get; set; }       // Sedán, SUV, Pick-up, Hatchback, etc.
+    public string? EngineNumber { get; set; }   // Número de motor
     public string? Notes { get; set; }
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -22,4 +25,5 @@ public class Vehicle : BaseEntity
     public VehicleColor? Color { get; set; }
     public ICollection<VehicleOwnerHistory> OwnerHistories { get; set; } = new List<VehicleOwnerHistory>();
     public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
+    public ICollection<VehiclePhoto> Photos { get; set; } = new List<VehiclePhoto>();
 }

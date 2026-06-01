@@ -32,7 +32,7 @@ public class RepuestosController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Administrador,Recepcionista")]
+    [Authorize(Roles = "Admin,Administrador,Recepcionista")]
     public async Task<IActionResult> Create([FromBody] CreateRepuestoCommand command)
     {
         var result = await _mediator.Send(command);
@@ -42,7 +42,7 @@ public class RepuestosController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Administrador,Recepcionista")]
+    [Authorize(Roles = "Admin,Administrador,Recepcionista")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateRepuestoCommand command)
     {
         command.Id = id;
@@ -51,7 +51,7 @@ public class RepuestosController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Admin,Administrador")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _mediator.Send(new DeleteRepuestoCommand { Id = id });

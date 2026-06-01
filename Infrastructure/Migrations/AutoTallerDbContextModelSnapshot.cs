@@ -358,6 +358,38 @@ namespace Infrastructure.Migrations
                     b.ToTable("DetallesFactura", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("Domain.Entities.OrderStatus", b =>
                 {
                     b.Property<int>("Id")
@@ -573,6 +605,11 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("Apellidos");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("Telefono");
 
                     b.HasKey("Id");
 
@@ -797,7 +834,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("FechaModificacion");
 
-                    b.Property<int>("MechanicId")
+                    b.Property<int?>("MechanicId")
                         .HasColumnType("integer")
                         .HasColumnName("IdMecanico");
 
@@ -883,6 +920,72 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ServiceOrderId");
 
                     b.ToTable("OrdenesServicio_Repuestos", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.ServiceOrderReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("EstimatedHours")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDiagnostic")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MechanicId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ReportText")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("ServiceOrderId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MechanicId");
+
+                    b.HasIndex("ServiceOrderId");
+
+                    b.ToTable("ServiceOrderReports");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ServiceOrderReportPart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PartId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ServiceOrderReportId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitPriceSnapshot")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId");
+
+                    b.HasIndex("ServiceOrderReportId");
+
+                    b.ToTable("ServiceOrderReportParts");
                 });
 
             modelBuilder.Entity("Domain.Entities.ServiceType", b =>
@@ -1015,6 +1118,11 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BodyType")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("TipoCarroceria");
+
                     b.Property<int>("ColorId")
                         .HasColumnType("integer")
                         .HasColumnName("IdColor");
@@ -1022,6 +1130,16 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("FechaCreacion");
+
+                    b.Property<string>("EngineNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("NumeroMotor");
+
+                    b.Property<string>("FuelType")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("TipoCombustible");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -1208,6 +1326,46 @@ namespace Infrastructure.Migrations
                     b.ToTable("HistorialDuenosVehiculo", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.VehiclePhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("IdFoto");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Caption")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("Descripcion");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("FechaCreacion");
+
+                    b.Property<bool>("IsPrimary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("EsPrincipal");
+
+                    b.Property<string>("PhotoData")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("FotoDatos");
+
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("IdVehiculo");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("FotosVehiculo", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Workshop", b =>
                 {
                     b.Property<int>("Id")
@@ -1364,6 +1522,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Invoice");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Notification", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.Part", b =>
                 {
                     b.HasOne("Domain.Entities.PartCategory", "Category")
@@ -1445,8 +1614,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.User", "Mechanic")
                         .WithMany()
                         .HasForeignKey("MechanicId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.Entities.OrderStatus", "OrderStatus")
                         .WithMany()
@@ -1507,6 +1675,44 @@ namespace Infrastructure.Migrations
                     b.Navigation("Part");
 
                     b.Navigation("ServiceOrder");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ServiceOrderReport", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "Mechanic")
+                        .WithMany()
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.ServiceOrder", "ServiceOrder")
+                        .WithMany()
+                        .HasForeignKey("ServiceOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mechanic");
+
+                    b.Navigation("ServiceOrder");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ServiceOrderReportPart", b =>
+                {
+                    b.HasOne("Domain.Entities.Part", "Part")
+                        .WithMany()
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.ServiceOrderReport", "ServiceOrderReport")
+                        .WithMany("ReportParts")
+                        .HasForeignKey("ServiceOrderReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+
+                    b.Navigation("ServiceOrderReport");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -1604,6 +1810,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Vehicle");
                 });
 
+            modelBuilder.Entity("Domain.Entities.VehiclePhoto", b =>
+                {
+                    b.HasOne("Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany("Photos")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("Domain.Entities.Customer", b =>
                 {
                     b.Navigation("VehicleOwnerHistories");
@@ -1635,6 +1852,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("ServiceOrderParts");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ServiceOrderReport", b =>
+                {
+                    b.Navigation("ReportParts");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("UserRoles");
@@ -1643,6 +1865,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Vehicle", b =>
                 {
                     b.Navigation("OwnerHistories");
+
+                    b.Navigation("Photos");
 
                     b.Navigation("ServiceOrders");
                 });

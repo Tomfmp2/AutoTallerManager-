@@ -9,20 +9,20 @@ namespace Application.Features.Usuarios.Commands.Register;
 public class RegisterCommand : IRequest<Result<int>>
 {
     public int WorkshopId  { get; set; }
-    public int RoleId      { get; set; }
-    public string Nombre   { get; set; } = null!;
+    public string RoleName { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
+    public string LastName  { get; set; } = null!;
     public string Email    { get; set; } = null!;
     public string Password { get; set; } = null!;
+    public string? Phone   { get; set; }
 }
 
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<int>>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IApplicationDbContext _db;
 
-    public RegisterCommandHandler(IUnitOfWork unitOfWork, IApplicationDbContext db)
+    public RegisterCommandHandler(IApplicationDbContext db)
     {
-        _unitOfWork = unitOfWork;
         _db = db;
     }
 
@@ -35,40 +35,69 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<in
         var emailUser   = emailParts[0];
         var domainName  = emailParts[1];
 
-        // Verificar que el email no exista
-        var exists = await _db.PersonEmails
-            .AnyAsync(e => e.EmailUser == emailUser &&
-                           e.EmailDomain != null && e.EmailDomain.Domain == domainName,
-                      cancellationToken);
-        if (exists)
-            return Result<int>.Failure("Ya existe un usuario con ese correo.");
+        // Check Email Uniqueness (case-insensitive and ignoring global query filters)
+        var domain = await _db.EmailDomains.IgnoreQueryFilters()
+            .FirstOrDefaultAsync(d => d.Domain.ToLower() == domainName.ToLower(), cancellationToken);
+        if (domain != null)
+        {
+            var emailExists = await _db.PersonEmails.IgnoreQueryFilters()
+                .AnyAsync(e => e.EmailUser.ToLower() == emailUser.ToLower() && e.EmailDomainId == domain.Id, cancellationToken);
+            if (emailExists)
+                return Result<int>.Failure("correo ya registrado");
+        }
 
-        var emailDomainRepo = _unitOfWork.Repository<EmailDomain>();
-        var domains = await emailDomainRepo.GetAsync(d => d.Domain == domainName, cancellationToken: cancellationToken);
-        var emailDomain = domains.FirstOrDefault() ?? new EmailDomain { Domain = domainName };
-        if (emailDomain.Id == 0)
-            await emailDomainRepo.AddAsync(emailDomain, cancellationToken);
+        // Check Phone Uniqueness (if phone is provided, ignoring query filters)
+        if (!string.IsNullOrWhiteSpace(request.Phone))
+        {
+            var phoneExists = await _db.Persons.IgnoreQueryFilters()
+                .AnyAsync(p => p.Phone == request.Phone, cancellationToken);
+            if (phoneExists)
+                return Result<int>.Failure("telefono ya registrado");
+        }
 
-        var phoneCodeRepo = _unitOfWork.Repository<PhoneCode>();
-        var phoneCodes = await phoneCodeRepo.GetAsync(p => p.Code == "+57", cancellationToken: cancellationToken);
-        var phoneCode = phoneCodes.FirstOrDefault() ?? new PhoneCode { Code = "+57", Country = "Colombia" };
-        if (phoneCode.Id == 0)
-            await phoneCodeRepo.AddAsync(phoneCode, cancellationToken);
+        var role = await _db.Roles.FirstOrDefaultAsync(r => r.Name == request.RoleName, cancellationToken);
+        if (role == null)
+            return Result<int>.Failure("El rol especificado no existe.");
 
-        var names     = request.Nombre.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-        var firstName = names.Length > 0 ? names[0] : string.Empty;
-        var lastName  = names.Length > 1 ? names[1] : string.Empty;
+        // Cargar emailDomain con seguimiento (tracked) directamente de _db
+        var emailDomain = await _db.EmailDomains.FirstOrDefaultAsync(d => d.Domain == domainName, cancellationToken);
+        if (emailDomain == null)
+        {
+            emailDomain = new EmailDomain { Domain = domainName };
+            _db.EmailDomains.Add(emailDomain);
+        }
+
+        // Cargar phoneCode con seguimiento (tracked) directamente de _db
+        var phoneCode = await _db.PhoneCodes.FirstOrDefaultAsync(p => p.Code == "+57", cancellationToken);
+        if (phoneCode == null)
+        {
+            phoneCode = new PhoneCode { Code = "+57", Country = "Colombia" };
+            _db.PhoneCodes.Add(phoneCode);
+        }
 
         var person = new Person
         {
-            FirstName = firstName,
-            LastName  = lastName,
+            FirstName = request.FirstName,
+            LastName  = request.LastName,
+            Phone     = request.Phone,
             Emails    = new List<PersonEmail>
             {
                 new PersonEmail { EmailUser = emailUser, EmailDomain = emailDomain, IsPrimary = true }
             }
         };
-        await _unitOfWork.Repository<Person>().AddAsync(person, cancellationToken);
+        _db.Persons.Add(person);
+
+        // Si el rol es Cliente, crear automáticamente el registro de Customer
+        if (role.Name == "Cliente")
+        {
+            var customer = new Customer
+            {
+                WorkshopId = request.WorkshopId,
+                Person = person,
+                IsActive = true
+            };
+            _db.Customers.Add(customer);
+        }
 
         var user = new User
         {
@@ -78,11 +107,12 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<in
             IsActive     = true,
             UserRoles    = new List<UserRole>
             {
-                new UserRole { RoleId = request.RoleId }
+                new UserRole { Role = role }
             }
         };
-        await _unitOfWork.Repository<User>().AddAsync(user, cancellationToken);
-        await _unitOfWork.CommitAsync(cancellationToken);
+        _db.Users.Add(user);
+        
+        await _db.SaveChangesAsync(cancellationToken);
 
         return Result<int>.Success(user.Id);
     }

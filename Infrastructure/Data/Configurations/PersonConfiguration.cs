@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,6 +15,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.Property(p => p.FirstName).HasColumnName("Nombres").HasMaxLength(100).IsRequired();
         builder.Property(p => p.LastName).HasColumnName("Apellidos").HasMaxLength(100).IsRequired();
         builder.Property(p => p.DateOfBirth).HasColumnName("FechaNacimiento").HasColumnType("DATE");
+        builder.Property(p => p.Phone).HasColumnName("Telefono").HasMaxLength(50);
 
         builder.Property(p => p.IsActive).HasColumnName("Activo").HasDefaultValue(true);
         builder.Property(p => p.CreatedAt).HasColumnName("FechaCreacion");

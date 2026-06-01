@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,7 +15,7 @@ public class ServiceOrderConfiguration : IEntityTypeConfiguration<ServiceOrder>
         builder.Property(o => o.WorkshopId).HasColumnName("IdTaller").IsRequired();
         builder.Property(o => o.VehicleId).HasColumnName("IdVehiculo").IsRequired();
         builder.Property(o => o.ServiceTypeId).HasColumnName("IdTipoServicio").IsRequired();
-        builder.Property(o => o.MechanicId).HasColumnName("IdMecanico").IsRequired();
+        builder.Property(o => o.MechanicId).HasColumnName("IdMecanico");
         builder.Property(o => o.ReceptionistId).HasColumnName("IdRecepcionista");
         builder.Property(o => o.OrderStatusId).HasColumnName("IdEstadoOrden").IsRequired();
 
